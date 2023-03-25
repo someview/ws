@@ -3,6 +3,7 @@ module ws
 go 1.19
 
 require (
+	github.com/fengyeall111/gopool v0.0.2
 	github.com/gobwas/httphead v0.1.0
 	github.com/gobwas/pool v0.2.1
 	github.com/gobwas/ws v1.1.0

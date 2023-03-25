@@ -3,13 +3,28 @@ package ws
 import (
 	"bufio"
 	"bytes"
+	"fmt"
+	"github.com/gobwas/httphead"
 	"io"
 	"net/http"
 	"net/textproto"
 	"net/url"
 	"strconv"
+)
 
-	"github.com/gobwas/httphead"
+type Handshake struct {
+	// Protocol is the subprotocol selected during handshake.
+	Protocol string
+
+	// Extensions is the list of negotiated extensions.
+	Extensions []httphead.Option
+}
+
+// Errors used by the websocket client.
+var (
+	ErrHandshakeBadStatus      = fmt.Errorf("unexpected http status")
+	ErrHandshakeBadSubProtocol = fmt.Errorf("unexpected protocol in %q header", headerSecProtocol)
+	ErrHandshakeBadExtensions  = fmt.Errorf("unexpected extensions in %q header", headerSecProtocol)
 )
 
 const (

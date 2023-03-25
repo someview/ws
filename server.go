@@ -3,12 +3,10 @@ package ws
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"net/http"
-	"time"
-
 	"github.com/gobwas/httphead"
 	"github.com/gobwas/pool/pbufio"
+	"io"
+	"net/http"
 )
 
 // Constants used by ConnUpgrader.
@@ -94,47 +92,7 @@ func Upgrade(conn io.ReadWriter) (Handshake, error) {
 	return DefaultUpgrader.Upgrade(conn)
 }
 
-// HTTPUpgrader contains options for upgrading connection to websocket from
-// net/http Handler arguments.
-type HTTPUpgrader struct {
-	// Timeout is the maximum amount of time an Upgrade() will spent while
-	// writing handshake response.
-	//
-	// The default is no timeout.
-	Timeout time.Duration
-
-	// Header is an optional http.Header mapping that could be used to
-	// write additional headers to the handshake response.
-	//
-	// Note that if present, it will be written in any result of handshake.
-	Header http.Header
-
-	// Protocol is the select function that is used to select subprotocol from
-	// list requested by client. If this field is set, then the first matched
-	// protocol is sent to a client as negotiated.
-	Protocol func(string) bool
-
-	// Extension is the select function that is used to select extensions from
-	// list requested by client. If this field is set, then the all matched
-	// extensions are sent to a client as negotiated.
-	//
-	// DEPRECATED. Use Negotiate instead.
-	Extension func(httphead.Option) bool
-
-	// Negotiate is the callback that is used to negotiate extensions from
-	// the client's offer. If this field is set, then the returned non-zero
-	// extensions are sent to the client as accepted extensions in the
-	// response.
-	//
-	// The argument is only valid until the Negotiate callback returns.
-	//
-	// If returned error is non-nil then connection is rejected and response is
-	// sent with appropriate HTTP error code and body set to error message.
-	//
-	// RejectConnectionError could be used to get more control on response.
-	Negotiate func(httphead.Option) (httphead.Option, error)
-}
-
+// Upgrade upgrades http connection to the websocket connection.
 // Upgrader contains options for upgrading connection to websocket.
 type Upgrader struct {
 	// ReadBufferSize and WriteBufferSize is an I/O buffer sizes.
@@ -160,30 +118,7 @@ type Upgrader struct {
 	// Note that returned bytes must be valid until Upgrade returns.
 	// If ProtocolCustom is set, it used instead of Protocol function.
 	ProtocolCustom func([]byte) (string, bool)
-
-	// Extension is a select function that is used to select extensions
-	// from list requested by client. If this field is set, then the all matched
-	// extensions are sent to a client as negotiated.
-	//
-	// Note that Extension may be called multiple times and implementations
-	// must track uniqueness of accepted extensions manually.
-	//
-	// The argument is only valid until the callback returns.
-	//
-	// According to the RFC6455 order of extensions passed by a client is
-	// significant. That is, returning true from this function means that no
-	// other extension with the same name should be checked because server
-	// accepted the most preferable extension right now:
-	// "Note that the order of extensions is significant.  Any interactions between
-	// multiple extensions MAY be defined in the documents defining the extensions.
-	// In the absence of such definitions, the interpretation is that the header
-	// fields listed by the client in its request represent a preference of the
-	// header fields it wishes to use, with the first options listed being most
-	// preferable."
-	//
-	// DEPRECATED. Use Negotiate instead.
-	Extension func(httphead.Option) bool
-
+	
 	// ExtensionCustom allow user to parse Sec-WebSocket-Extensions header
 	// manually.
 	//

@@ -163,7 +163,6 @@ func canonicalizeHeaderKey(k []byte) {
 //
 // NOTE: it may return copied flag to notify that returned buffer is safe to
 // use.
-// 这方法本身很奇怪，直接使用readSlice或者readBytes不就可以了吗
 func readLine(br *bufio.Reader) ([]byte, error) {
 	var line []byte
 	for {
