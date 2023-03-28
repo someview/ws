@@ -8,8 +8,8 @@ import (
 )
 
 type ReaderPool interface {
-	Get(r io.Reader) *bufio.Reader
-	Put(br *bufio.Reader)
+	GetBufferReader(r io.Reader) *bufio.Reader
+	PutBufferReader(br *bufio.Reader)
 	Destory() // you can not use Get or Put After call  this method called
 }
 
@@ -19,13 +19,13 @@ type readerPool struct {
 	size int
 }
 
-func (rp *readerPool) Get(r io.Reader) *bufio.Reader {
+func (rp *readerPool) GetBufferReader(r io.Reader) *bufio.Reader {
 	br := rp.Pool.Get().(*bufio.Reader)
 	br.Reset(r)
 	return br
 }
 
-func (rp *readerPool) Put(br *bufio.Reader) {
+func (rp *readerPool) PutBufferReader(br *bufio.Reader) {
 	br.Reset(nil)
 	rp.Pool.Put(br)
 }

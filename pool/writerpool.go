@@ -8,8 +8,8 @@ import (
 )
 
 type WriterPool interface {
-	Get(w io.Writer) *bufio.Writer
-	Put(bw *bufio.Writer)
+	GetBufferWriter(w io.Writer) *bufio.Writer
+	PutBufferWriter(bw *bufio.Writer)
 	Destory()
 }
 
@@ -18,13 +18,13 @@ type writerPool struct {
 	*sync.Pool
 }
 
-func (rp *writerPool) Get(r io.Writer) *bufio.Writer {
+func (rp *writerPool) GetBufferWriter(r io.Writer) *bufio.Writer {
 	br := rp.Pool.Get().(*bufio.Writer)
 	br.Reset(r)
 	return br
 }
 
-func (rp *writerPool) Put(br *bufio.Writer) {
+func (rp *writerPool) PutBufferWriter(br *bufio.Writer) {
 	br.Reset(nil)
 	rp.Pool.Put(br)
 }
