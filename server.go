@@ -1,13 +1,13 @@
 package ws
 
 import (
-	http "github.com/fengyeall111/gnet-http"
+	gnethttp "github.com/fengyeall111/gnet-http"
 	"github.com/panjf2000/gnet/v2"
 	"github.com/valyala/fasthttp"
 )
 
 type WebSocketServer struct { // 添加一个环形队列
-	http.HttpServer
+	gnethttp.HttpServer
 	AcceptOptions                                             // 提供通用的功能
 	OnBeforeUpgrade func(ctx fasthttp.RequestCtx) (err error) // 自定义的功能可以在这钩子函数里实现
 }
@@ -20,6 +20,7 @@ func (wss *WebSocketServer) Run(addr string, ack AcceptOptions, opts ...gnet.Opt
 }
 
 func (wss *WebSocketServer) handShake(ctx fasthttp.RequestCtx) {
+	vertifyClientRequest(ctx)
 }
 
 func (wss *WebSocketServer) OnTextMessage() {
