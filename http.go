@@ -23,10 +23,10 @@ type httpResponseLine struct {
 	reason       []byte
 }
 
-type ConnectionError struct {
-	reason string
-	code   int
-	header map[string]string
+type HandShakeError struct {
+	Reason string
+	Code   int
+	Header map[string]string
 }
 
 
